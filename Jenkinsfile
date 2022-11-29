@@ -27,7 +27,7 @@ pipeline {
     
     stage('Docker Build') {
       steps {
-        sh 'docker build -t pbeniwal/mycalcwithwar:v$BUILD_NUMBER .'
+        sh 'docker build -t santhoshkumarg25/mycalcwithwar:v$BUILD_NUMBER .'
       }
     }
     
@@ -35,7 +35,7 @@ pipeline {
       steps {
       	withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
         	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push pbeniwal/mycalcwithwar:v$BUILD_NUMBER'
+          sh 'docker push santhoshkumarg25/mycalcwithwar:v$BUILD_NUMBER'
         }
       }
     }
