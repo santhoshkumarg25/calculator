@@ -1,44 +1,27 @@
-pipeline {
-  agent any
-  stages {
-    stage('Compile') {
-      steps{
-        sh 'mvn clean compile'
-      }
-    }
+pipeline
+{
 
-    stage('UnitTest') {
-      steps{
-        sh 'mvn clean test'
-      }
-    }
-    
-    stage('Package') {
-      steps{
-        sh 'mvn package'
-     }
-    }
-
-    stage('Deliver') {
-      steps{
-        deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://:13.233.61.128:9090/')], contextPath: null, war: 'target/calculator.war'
-     }
-    }
-    
-    stage('Docker Build') {
-      steps {
-        sh 'docker build -t santhoshkumarg25/var:v$BUILD_NUMBER .'
-      }
-    }
-    
-    stage('Docker Push') {
-      steps {
-      	withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        	sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push santhoshkumarg25/var:v$BUILD_NUMBER'
-        }
-      }
-    }
-    
-  }
+agent any
+stages {
+stage('Compile') {
+steps{
+sh 'mvn clean compile'
+}
+}
+stage('UnitTest') {
+steps{
+sh 'mvn clean test'
+}
+}
+stage('QA') {
+steps{
+sh 'mvn pmd:pmd'
+}
+}
+stage('Package') {
+steps{
+sh 'mvn package'
+}
+}
+}
 }
